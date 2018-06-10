@@ -1,11 +1,6 @@
 - name: Configure webserver with nginx
   hosts: webservers
   become: True
-  vars:
-    key_file: /etc/nginx/ssl/nginx.key
-    cert_file: /etc/nginx/ssl/nginx.crt
-    conf_file: /etc/nginx/sites-available/default
-    server_name: localhost
   tasks:
     - name: install nginx
       apt: name=nginx update_cache=yes cache_valid_time=3600
@@ -26,11 +21,8 @@
       notify: restart nginx
 
     - name: enable configuration
-      file: >
-        dest=/etc/nginx/sites-enabled/default
-        src={{ conf_file }}
-        state=link
-        notify: restart nginx
+      file:  dest=/etc/nginx/sites-enabled/default src={{ conf_file }} state=link
+      notify: restart nginx
 
     - name: copy index.html
       template: src=templates/index.html.j2 dest=/usr/share/nginx/html/index.html
